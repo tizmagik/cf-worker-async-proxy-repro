@@ -11,8 +11,41 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+// import { Router, RouterType } from 'itty-router';
+
+export const Router = ({ base = '', routes = [], ...other } = {}) => ({
+	// This is simplified version of what itty-router does:
+	// https://github.com/kwhitley/itty-router/blob/3a819942b11ba85bf8ac8dfbb37b4c98f977fb41/src/Router.ts#L15
+	__proto__: new Proxy(
+		{},
+		{
+			get: (target, prop, receiver) => () => receiver,
+		}
+	),
+	routes,
+	...other,
+});
+
+const createRouter = () => {
+	const router = Router();
+	return router;
+};
+
+const createAsyncRouter = async () => {
+	return new Promise<any>((resolve, reject) => {
+		const router = Router();
+		resolve(router);
+	});
+};
+
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
-		return new Response('Hello World!');
+		// !!! Doing it synchronously works fine!
+		// const router = createRouter();
+
+		// !!! Doing it asynchronously does not work!
+		const router = await createAsyncRouter();
+
+		return new Response('Hello World! ...');
 	},
 } satisfies ExportedHandler<Env>;
