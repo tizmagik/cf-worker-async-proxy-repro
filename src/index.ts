@@ -13,10 +13,10 @@
 
 // import { Router, RouterType } from 'itty-router';
 
-export const Router = ({ base = '', routes = [], ...other } = {}) => ({
+const Router = ({ base = '', routes = [], ...other } = {}) => ({
 	// This is simplified version of what itty-router does:
 	// https://github.com/kwhitley/itty-router/blob/3a819942b11ba85bf8ac8dfbb37b4c98f977fb41/src/Router.ts#L15
-	__proto__: new Proxy(
+	notUsingProtoWorksFine: new Proxy(
 		{},
 		{
 			get: (target, prop, receiver) => () => receiver,
@@ -40,12 +40,16 @@ const createAsyncRouter = async () => {
 
 export default {
 	async fetch(request, env, ctx): Promise<Response> {
+		console.log('[inside fetch]');
 		// !!! Doing it synchronously works fine!
 		// const router = createRouter();
+
+		console.log('[before createAsyncRouter]');
 
 		// !!! Doing it asynchronously does not work!
 		const router = await createAsyncRouter();
 
+		console.log('[before returning Response]');
 		return new Response('Hello World! ...');
 	},
 } satisfies ExportedHandler<Env>;
