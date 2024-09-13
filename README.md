@@ -1,25 +1,27 @@
-# CF Worker + Async Proxy Error Reproduction
+# Node `Object.__proto__` bug reproduction
 
-This repository is a reproduction of an error that occurs when using Cloudflare Workers with an async proxy.
+This repository is a reproduction of an error that occurs when using `Object.__proto__` in a Node.js environment.
 
-## Error
+This was first discovered while generating a router asynchronously via `itty-router` from within a Cloudflare Worker, but this minimal reproduction shows the issue is not specific to `itty-router` or Cloudflare Workers.
 
-When using an async proxy in a Cloudflare Worker, the following error is thrown:
+## Bug
 
-```
-Error: The script will never generate a response.
-    at async Object.fetch (file:///Users/jeremygayed/src/repro/node_modules/miniflare/dist/src/workers/core/entry.worker.js:1026:22)
-```
+When using `Object.__proto__` in a Node.js environment, the execution never gets to the point where a response is returned as shown in this reproduction.
 
 ## Reproduction
 
-To reproduce the error, run the following commands:
+To reproduce the bug, run the following commands:
 
 ```bash
 npm install
-npm run start
+npm start
 ```
 
-To toggle the error, switch between using `createAsyncRouter` and `createRouter`.
+To toggle the bug, switch between using `createAsyncRouter` and `createRouter` with the following commands:
+
+```bash
+npm run sync
+npm run async
+```
 
 Just by calling `createAsyncRouter` instead of `createRouter`, the error is shown -- even if you don't use the returned value.
