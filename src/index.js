@@ -18,7 +18,7 @@ const createRouter = () => {
 };
 
 const createAsyncRouter = async () => {
-	return new Promise<any>((resolve, reject) => {
+	return new Promise((resolve, reject) => {
 		const router = Router();
 		resolve(router);
 	});
